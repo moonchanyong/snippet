@@ -34,3 +34,47 @@ test() {
   Assertions.assertTrue(hasA.and(hasD).or(hasB).isSatisfiedBy(mock), "Test operators and, or");
 }
 ```
+
+### JS
+
+1. MatchBuilder
+
+```ts
+const CASE_A = 'caseA'
+const CASE_B = 'caseB'
+const CASE_C = 'caseC'
+
+// when not use MatchBuilder
+const someSwitch = (key, ...args) => {
+  switch(key) {
+    case CASE_A:
+      return `it's ${key} and args are ${...args}`
+    case CASE_B:
+      return `it's ${key} and args are ${...args}`
+    case CASE_C:
+      return `it's ${key} and args are ${...args}`
+    default:
+      return `it's default`;
+  }
+}
+
+someSwitch(CASE_A, 1, 2, 3); // each case logic has low reusability
+
+// when use MatchBuilder
+import MatchBuilder from '{your}/{local}/{path}/util.ts'
+
+const matcher = new MatchBuilder()
+  .route(CASE_A, (key, ...args) => `it's ${key} and args are ${...args}`)
+  .route(CASE_B, (key, ...args) => `it's ${key} and args are ${...args}`)
+  .route(CASE_C, (key, ...args) => `it's ${key} and args are ${...args}`)
+  .default(() => `it's default`)
+  .build();
+
+console.log(matcher(CASE_A, 1, 2, 3)); // `it's caseA and args are 1,2,3`
+console.log(matcher(CASE_B, 'a', 'b', 'c')); // `it's caseB and args are a,b,c`
+console.log(matcher(CASE_C)); // `it's caseC and args are a,b,c`
+console.log(matcher('any key')); // `it's default`
+
+
+
+```
